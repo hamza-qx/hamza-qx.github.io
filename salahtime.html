@@ -1,0 +1,260 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salah Times</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100..900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js" integrity="sha512-tWHlutFnuG0C6nQRlpvrEhE4QpkG1nn2MOUMWmUeRePl4e3Aki0VB6W1v3oLjFtd0hVOtRQ9PHpSfN6u6/QXkQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</head>
+<body>
+    <script>
+
+        const today = new Date()
+
+        const year = today.getFullYear
+
+        let month = today.getMonth() + 1;
+        let day = today.getDate();
+        if (day < 10) day = '0' + day;
+        if (month < 10) month = '0' + month;
+
+        if ("geolocation" in navigator) {
+
+        navigator.geolocation.getCurrentPosition(function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            
+
+            $.get(`http://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${latitude}&longitude=${longitude}&method=2&lattiudeAdjustmentMethod=3`, (data, status) => {
+                setTimes(data)
+            });
+
+        }, function(error) {
+
+            console.error("Error getting geolocation:", error);
+
+        });
+        }
+
+        function setTimes(data) {
+            console.log(data.data.date.hijri)
+            const hijri_year = data.data.date.hijri.year
+            const hijri_month = data.data.date.hijri.month.en
+            const hijri_day = data.data.date.hijri.day
+
+            document.getElementById("date").innerText = `${hijri_month}, ${hijri_day}, ${hijri_year} AH`
+
+            const time = (data.data.timings)
+            document.getElementById("fajr").innerText = `Fajr - ${time.Fajr} - الفجر`
+            document.getElementById("zuhr").innerText = `Zuhr - ${time.Dhuhr} - ٱلظُّهْر`
+            document.getElementById("asr").innerText = `Asr - ${time.Asr} - العصر`
+            document.getElementById("maghrib").innerText = `Maghrib - ${time.Maghrib} - المغرب`
+            document.getElementById("isha").innerText = `Isha - ${time.Isha} - العشاء`
+
+        }
+        
+
+        
+    </script>
+    
+    <style>
+
+        :root {
+            --gold: rgb(216, 171, 24);
+            --bg: rgba(255, 255, 255, 0.06);
+        }
+
+        body {
+            background-image: url("./background.jpg");
+            backdrop-filter: blur(4px);
+            background-color: #383333;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 65px;
+            font-weight: 900;
+            color: var(--gold);
+            background-color: var(--bg);
+            border-radius: 15px;
+            margin-top: 1%;
+            margin-bottom: 0;
+            margin-left: 35%;
+            margin-right: 35%;
+        }
+
+        h2 {
+            text-align: center;
+            color:white;
+            background-color: var(--bg);
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 0.4%;
+            border-radius: 15px;
+            font-family: "Noto Sans", sans-serif;
+            font-weight: 400;
+        }
+
+        .c {
+            height: 75%;
+            user-select: none;
+            margin-bottom: 0%;
+            margin-left: 30%;
+            margin-right: 30%;
+            display: grid; 
+            grid-template-columns: 11% 89%; 
+            grid-template-rows: repeat(5, auto); 
+            gap: 1% 2%; 
+            grid-template-areas: 
+                ". ."
+                ". ."
+                ". ."
+                ". ."
+            }
+
+        .c > p {
+            text-align: center;
+            align-self: center;
+            justify-self: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: "Noto Sans Arabic", "Noto Sans", sans-serif;
+            font-size: 50px;
+            font-weight: 300;
+            line-height: 160%;
+            color: white;
+            background-color: var(--bg);
+            border-radius: 15px;
+            height: 100%;
+            width: 100%;
+            margin: 3%;
+            white-space: no-wrap;
+            overflow: hidden;
+            text-overflow: ellipsis; 
+
+        }
+
+        .c > p:hover, h2:hover {
+            color: var(--gold);
+            transform: scale(1.05);
+        }
+
+        .material-symbols-rounded {
+            font-size: 50px;
+            background-color: var(--bg);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            margin-left: auto;
+            margin-right: auto;
+            width: 100%;
+            min-height: 100%;
+            object-fit: contain;
+            color: white;
+
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 200,
+                'opsz' 48
+        }
+
+        .material-symbols-rounded:hover {
+            transform: scale(1.07);
+            color: var(--gold);
+        }
+
+        @media only screen and (max-width: 768px) {
+            .c {
+                height: 120%;
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+
+            h1 {
+                margin-left: 6%;
+                margin-right: 6%;
+            }
+
+            h2 {
+                margin-left: 10%;
+                margin-right: 10%;
+            }
+        }
+
+        @media only screen and (min-width: 769px) and (max-width: 1024px) {
+            .c {
+                margin-left: 15%;
+                margin-right: 15%;
+            }
+
+            h1 {
+                margin-left: 18%;
+                margin-right: 18%;
+            }
+
+            h2 {
+                margin-left: 22%;
+                margin-right: 22%;
+            }
+
+        }
+
+        @media only screen and (min-width: 1025px) {
+            .c {
+                margin-left: 30%;
+                margin-right: 30%;
+            }
+
+            h1 {
+                margin-left: 35%;
+                margin-right: 35%;
+            }
+
+            h2 {
+                margin-left: 40%;
+                margin-right: 40%;
+            }
+        }
+
+        h1, h2, .c > p, .material-symbols-rounded {
+            backdrop-filter: blur(4px);
+        }
+
+    </style>
+
+    <h1>Salah Times</h1>
+    <h2 id="date">Location Required</h2>
+    <div class="c">
+        <span class="material-symbols-rounded">wb_twilight</span>
+        <p id="fajr" > Location Required </p>
+        <span class="material-symbols-rounded">wb_sunny</span>
+        <p id="zuhr" > Location Required </p>
+        <span class="material-symbols-rounded">routine</span>
+        <p id="asr"> Location Required </p>
+        <span class="material-symbols-rounded">water_lux</span>
+        <p id="maghrib"> Location Required </p>
+        <span class="material-symbols-rounded">dark_mode</span>
+        <p id="isha"> Location Required </p>
+    </div>
+
+    
+
+</body>
+</html>
